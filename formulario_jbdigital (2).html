@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JB Digital — Formulario de Datos</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--negro:#030303;--dorado:#D5C087;--dorado2:#A6863B;--crema:#FAF7F2;--gris:#666;--blanco:#fff;}
+html,body{max-width:100%;overflow-x:hidden;}
+body{font-family:'Jost',sans-serif;background:var(--crema);color:var(--negro);}
+
+/* HEADER */
+.header{background:var(--negro);padding:2.5rem 5%;text-align:center;position:relative;overflow:hidden;}
+.header::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--dorado2),var(--dorado),var(--dorado2));}
+.header-logo{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;color:var(--blanco);letter-spacing:4px;margin-bottom:0.5rem;}
+.header-logo span{color:var(--dorado);}
+.header-title{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:300;color:var(--dorado);margin-bottom:0.5rem;}
+.header-desc{font-size:0.88rem;color:rgba(255,255,255,0.4);max-width:500px;margin:0 auto;line-height:1.6;}
+
+/* PROGRESS */
+.progress-bar{background:var(--negro);padding:1rem 5%;position:sticky;top:0;z-index:10;border-bottom:1px solid rgba(213,192,135,0.15);}
+.progress-inner{max-width:680px;margin:0 auto;display:flex;align-items:center;gap:1rem;}
+.progress-track{flex:1;height:2px;background:rgba(213,192,135,0.15);border-radius:1px;}
+.progress-fill{height:100%;background:var(--dorado);border-radius:1px;transition:width 0.4s ease;width:0%;}
+.progress-text{font-size:0.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--dorado);white-space:nowrap;}
+
+/* FORM WRAPPER */
+.form-wrapper{max-width:680px;margin:0 auto;padding:3rem 5%;}
+
+/* SECTIONS */
+.form-section{display:none;animation:fadeIn 0.4s ease;}
+.form-section.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+
+.section-header{margin-bottom:2.5rem;}
+.section-num{font-size:0.7rem;letter-spacing:4px;text-transform:uppercase;color:var(--dorado2);margin-bottom:0.5rem;display:flex;align-items:center;gap:0.8rem;}
+.section-num::before{content:'';width:24px;height:1px;background:var(--dorado2);}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:400;color:var(--negro);line-height:1.1;}
+.section-title em{color:var(--dorado2);font-style:italic;}
+
+/* FIELDS */
+.field{margin-bottom:1.8rem;}
+.field label{display:block;font-size:0.85rem;font-weight:500;color:var(--negro);margin-bottom:0.5rem;letter-spacing:0.3px;}
+.field label .req{color:var(--dorado2);}
+.field input,.field textarea,.field select{width:100%;background:var(--blanco);border:1px solid rgba(0,0,0,0.1);border-bottom:2px solid rgba(213,192,135,0.3);padding:0.9rem 1rem;font-family:'Jost',sans-serif;font-size:0.92rem;color:var(--negro);transition:all 0.3s;outline:none;border-radius:0;appearance:none;}
+.field input:focus,.field textarea:focus,.field select:focus{border-bottom-color:var(--dorado);background:var(--blanco);}
+.field textarea{resize:vertical;min-height:100px;}
+.field select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23A6863B' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;}
+.field-hint{font-size:0.78rem;color:var(--gris);margin-top:0.4rem;font-style:italic;}
+
+/* RADIO/CHECK */
+.options{display:flex;flex-direction:column;gap:0.6rem;margin-top:0.3rem;}
+.option{display:flex;align-items:center;gap:0.8rem;padding:0.7rem 1rem;background:var(--blanco);border:1px solid rgba(0,0,0,0.08);cursor:pointer;transition:all 0.2s;}
+.option:hover{border-color:var(--dorado);background:rgba(213,192,135,0.05);}
+.option input{width:16px;height:16px;accent-color:var(--dorado2);cursor:pointer;flex-shrink:0;}
+.option span{font-size:0.88rem;color:var(--negro);}
+.option.selected{border-color:var(--dorado);background:rgba(213,192,135,0.08);}
+
+/* 2 COLS */
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;}
+
+/* NAVIGATION */
+.nav-btns{display:flex;justify-content:space-between;align-items:center;margin-top:3rem;padding-top:2rem;border-top:1px solid rgba(0,0,0,0.08);}
+.btn-prev{background:transparent;border:1px solid rgba(0,0,0,0.15);color:var(--gris);padding:0.8rem 2rem;font-family:'Jost',sans-serif;font-size:0.82rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;}
+.btn-prev:hover{border-color:var(--negro);color:var(--negro);}
+.btn-next{background:var(--negro);color:var(--blanco);padding:0.8rem 2.5rem;font-family:'Jost',sans-serif;font-size:0.82rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;border:none;}
+.btn-next:hover{background:var(--dorado2);}
+.btn-submit{background:var(--dorado);color:var(--negro);padding:1rem 3rem;font-family:'Jost',sans-serif;font-size:0.85rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;border:none;font-weight:600;}
+.btn-submit:hover{background:var(--dorado2);color:var(--blanco);}
+
+/* SUCCESS */
+.success{display:none;text-align:center;padding:4rem 2rem;}
+.success.show{display:block;animation:fadeIn 0.5s ease;}
+.success-icon{font-size:3rem;margin-bottom:1.5rem;}
+.success h2{font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--negro);margin-bottom:1rem;}
+.success p{color:var(--gris);font-size:0.95rem;line-height:1.7;max-width:400px;margin:0 auto 2rem;}
+.success-wa{display:inline-flex;align-items:center;gap:0.8rem;background:#25D366;color:var(--blanco);padding:0.9rem 2rem;text-decoration:none;font-size:0.85rem;letter-spacing:1px;font-weight:500;transition:opacity 0.2s;}
+.success-wa:hover{opacity:0.9;}
+
+/* FOOTER */
+.form-footer{background:var(--negro);padding:1.5rem 5%;text-align:center;border-top:1px solid rgba(213,192,135,0.1);}
+.form-footer p{font-size:0.75rem;color:rgba(255,255,255,0.2);}
+.form-footer span{color:var(--dorado);}
+
+@media(max-width:600px){
+  .field-row{grid-template-columns:1fr;}
+  .header{padding:2rem 5%;}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-logo">JB<span>.</span> DIGITAL</div>
+  <div class="header-title">Formulario de Datos</div>
+  <p class="header-desc">Completa este formulario para que podamos crear tu página web perfecta. Son 5 secciones rápidas ✦</p>
+</div>
+
+<div class="progress-bar">
+  <div class="progress-inner">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <span class="progress-text" id="progressText">1 / 5</span>
+  </div>
+</div>
+
+<div class="form-wrapper">
+  <form id="mainForm" action="https://formspree.io/f/mojblwvp" method="POST">
+
+    <!-- SECCIÓN 1 -->
+    <div class="form-section active" data-section="1">
+      <div class="section-header">
+        <div class="section-num">01 — Información básica</div>
+        <h2 class="section-title">Datos de tu<br><em>negocio</em></h2>
+      </div>
+      <div class="field">
+        <label>Nombre del negocio <span class="req">*</span></label>
+        <input type="text" id="nombre" placeholder="Ej: Capelli Centro Estético" required>
+      </div>
+      <div class="field">
+        <label>¿A qué se dedica? ¿Qué vende o qué servicio ofrece? <span class="req">*</span></label>
+        <textarea id="rubro" placeholder="Ej: Somos una peluquería y centro de estética especializado en tratamientos capilares y faciales..." required></textarea>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Ciudad o comuna <span class="req">*</span></label>
+          <input type="text" id="ciudad" placeholder="Ej: Santiago, Quilicura..." required>
+        </div>
+        <div class="field">
+          <label>¿A quién va dirigido?</label>
+          <input type="text" id="publico" placeholder="Ej: Mujeres 25-45 años">
+        </div>
+      </div>
+      <div class="field">
+        <label>Describe tu negocio en 2-3 líneas <span class="req">*</span></label>
+        <textarea id="descripcion" placeholder="Esta descripción aparecerá en la sección 'Nosotros' de tu página..." required></textarea>
+        <span class="field-hint">Cuéntanos quiénes son, qué los hace especiales y por qué elegirlos</span>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 2 -->
+    <div class="form-section" data-section="2">
+      <div class="section-header">
+        <div class="section-num">02 — Lo que ofreces</div>
+        <h2 class="section-title">Contenido de<br><em>tu página</em></h2>
+      </div>
+      <div class="field">
+        <label>Lista tus servicios o productos <span class="req">*</span></label>
+        <textarea id="servicios" style="min-height:140px;" placeholder="Ej:&#10;- Corte de cabello: corte profesional para dama&#10;- Tinte: coloración completa con productos premium&#10;- Limpieza facial: limpieza profunda y revitalizante" required></textarea>
+        <span class="field-hint">Escribe cada uno con una descripción breve</span>
+      </div>
+      <div class="field">
+        <label>Slogan o frase del negocio</label>
+        <input type="text" id="slogan" placeholder="Ej: Tu belleza, nuestra pasión (si no tienes, lo creamos)">
+      </div>
+      <div class="field">
+        <label>¿Quieres mostrar precios en la página?</label>
+        <div class="options">
+          <label class="option"><input type="radio" name="precios" value="si"><span>Sí, quiero mostrar todos los precios</span></label>
+          <label class="option"><input type="radio" name="precios" value="algunos"><span>Solo algunos precios</span></label>
+          <label class="option"><input type="radio" name="precios" value="no"><span>No por ahora</span></label>
+        </div>
+      </div>
+      <div class="field">
+        <label>¿Tienes fotos del negocio o productos?</label>
+        <div class="options">
+          <label class="option"><input type="radio" name="fotos" value="si"><span>Sí, tengo buenas fotos (las mando por WhatsApp)</span></label>
+          <label class="option"><input type="radio" name="fotos" value="pocas"><span>Tengo algunas pero pocas</span></label>
+          <label class="option"><input type="radio" name="fotos" value="no"><span>No tengo fotos</span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 3 -->
+    <div class="form-section" data-section="3">
+      <div class="section-header">
+        <div class="section-num">03 — Tu identidad</div>
+        <h2 class="section-title">Identidad<br><em>visual</em></h2>
+      </div>
+      <div class="field">
+        <label>¿Tienes logo?</label>
+        <div class="options">
+          <label class="option"><input type="radio" name="logo" value="si"><span>Sí, lo tengo en buena calidad (lo mando por WhatsApp)</span></label>
+          <label class="option"><input type="radio" name="logo" value="baja"><span>Sí pero en baja calidad</span></label>
+          <label class="option"><input type="radio" name="logo" value="no"><span>No tengo logo</span></label>
+        </div>
+      </div>
+      <div class="field">
+        <label>¿Tienes colores definidos para tu marca?</label>
+        <input type="text" id="colores" placeholder="Ej: Dorado #D5C087 y negro / Azul marino y blanco">
+        <span class="field-hint">Si no tienes, lo definimos juntos sin costo adicional</span>
+      </div>
+      <div class="field">
+        <label>¿Hay alguna página web que te guste de referencia?</label>
+        <input type="text" id="referencia" placeholder="Ej: www.skindermachile.cl — me gusta el diseño oscuro y elegante">
+        <span class="field-hint">Pega el link y cuéntanos qué te gusta de ella</span>
+      </div>
+      <div class="field">
+        <label>Estilo visual que prefieres</label>
+        <div class="options">
+          <label class="option"><input type="radio" name="estilo" value="oscuro"><span>Oscuro y elegante (negro, dorado)</span></label>
+          <label class="option"><input type="radio" name="estilo" value="claro"><span>Claro y minimalista (blanco, gris)</span></label>
+          <label class="option"><input type="radio" name="estilo" value="colorido"><span>Colorido y dinámico</span></label>
+          <label class="option"><input type="radio" name="estilo" value="natural"><span>Natural y orgánico (tierra, verde)</span></label>
+          <label class="option"><input type="radio" name="estilo" value="libre"><span>Sin preferencia — confío en ti 😊</span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 4 -->
+    <div class="form-section" data-section="4">
+      <div class="section-header">
+        <div class="section-num">04 — Tu contacto</div>
+        <h2 class="section-title">Contacto y<br><em>redes sociales</em></h2>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>WhatsApp que irá en la página <span class="req">*</span></label>
+          <input type="tel" id="whatsapp" placeholder="+56 9 XXXX XXXX" required>
+        </div>
+        <div class="field">
+          <label>Correo electrónico</label>
+          <input type="email" id="correo" placeholder="contacto@negocio.cl">
+        </div>
+      </div>
+      <div class="field">
+        <label>Dirección física (si tienes local)</label>
+        <input type="text" id="direccion" placeholder="Ej: Av. Providencia 1234, Santiago">
+      </div>
+      <div class="field">
+        <label>Horarios de atención</label>
+        <input type="text" id="horarios" placeholder="Ej: Lunes a Sábado 9:00 — 19:00">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Instagram</label>
+          <input type="text" id="instagram" placeholder="@minegocio">
+        </div>
+        <div class="field">
+          <label>Facebook</label>
+          <input type="text" id="facebook" placeholder="facebook.com/minegocio">
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 5 -->
+    <div class="form-section" data-section="5">
+      <div class="section-header">
+        <div class="section-num">05 — Detalles finales</div>
+        <h2 class="section-title">Información<br><em>técnica</em></h2>
+      </div>
+      <div class="field">
+        <label>¿Tienes dominio propio? *(Ej: www.minegocio.cl)*</label>
+        <div class="options">
+          <label class="option"><input type="radio" name="dominio" value="si"><span>Sí, ya tengo dominio</span></label>
+          <label class="option"><input type="radio" name="dominio" value="quiero"><span>No tengo, quiero uno</span></label>
+          <label class="option"><input type="radio" name="dominio" value="nosé"><span>No sé qué es eso</span></label>
+        </div>
+      </div>
+      <div class="field">
+        <label>¿Qué tipo de página necesitas?</label>
+        <div class="options">
+          <label class="option"><input type="radio" name="tipo" value="informativa"><span>Página informativa (mostrar servicios y contacto)</span></label>
+          <label class="option"><input type="radio" name="tipo" value="tienda"><span>Tienda online (vender productos)</span></label>
+          <label class="option"><input type="radio" name="tipo" value="ambas"><span>Ambas</span></label>
+        </div>
+      </div>
+      <div class="field">
+        <label>¿Cuál es tu presupuesto aproximado?</label>
+        <div class="options">
+          <label class="option"><input type="radio" name="presupuesto" value="basico"><span>Plan básico — $79.990 (landing 4 secciones)</span></label>
+          <label class="option"><input type="radio" name="presupuesto" value="estandar"><span>Plan estándar — $150.000 (página completa)</span></label>
+          <label class="option"><input type="radio" name="presupuesto" value="premium"><span>Plan premium — $220.000+ (con tienda o funciones avanzadas)</span></label>
+          <label class="option"><input type="radio" name="presupuesto" value="nose"><span>No sé, necesito asesoría</span></label>
+        </div>
+      </div>
+      <div class="field">
+        <label>¿Algo más que quieras agregar o aclarar?</label>
+        <textarea id="comentarios" placeholder="Cualquier detalle importante para tu proyecto..."></textarea>
+      </div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="success" id="successMsg">
+      <div class="success-icon">✦</div>
+      <h2>¡Recibido con éxito!</h2>
+      <p>Gracias por completar el formulario. Javier revisará tu información y se pondrá en contacto contigo en menos de 24 horas para comenzar con tu proyecto.</p>
+      <a href="https://wa.me/56920141502?text=Hola Javier, acabo de completar el formulario de datos para mi página web" class="success-wa" target="_blank">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Confirmar por WhatsApp
+      </a>
+    </div>
+
+    <!-- NAVIGATION -->
+    <div class="nav-btns" id="navBtns">
+      <button type="button" class="btn-prev" id="btnPrev" onclick="prevSection()" style="visibility:hidden;">← Anterior</button>
+      <button type="button" class="btn-next" id="btnNext" onclick="nextSection()">Siguiente →</button>
+    </div>
+
+  </form>
+</div>
+
+<div class="form-footer">
+  <p>JB Digital · Diseño Web & Ads · Santiago, Chile · <span>Tu información es confidencial</span></p>
+</div>
+
+<script>
+let current = 1;
+const total = 5;
+
+function updateProgress() {
+  const pct = ((current - 1) / (total - 1)) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = current + ' / ' + total;
+  document.getElementById('btnPrev').style.visibility = current === 1 ? 'hidden' : 'visible';
+  const btnNext = document.getElementById('btnNext');
+  if (current === total) {
+    btnNext.textContent = 'Enviar ✦';
+    btnNext.className = 'btn-submit';
+    btnNext.onclick = submitForm;
+  } else {
+    btnNext.textContent = 'Siguiente →';
+    btnNext.className = 'btn-next';
+    btnNext.onclick = nextSection;
+  }
+}
+
+function nextSection() {
+  const section = document.querySelector(`[data-section="${current}"]`);
+  const required = section.querySelectorAll('[required]');
+  let valid = true;
+  required.forEach(f => {
+    if (!f.value.trim()) {
+      f.style.borderBottomColor = '#C41E3A';
+      valid = false;
+      f.focus();
+    } else {
+      f.style.borderBottomColor = '';
+    }
+  });
+  if (!valid) return;
+  section.classList.remove('active');
+  current++;
+  document.querySelector(`[data-section="${current}"]`).classList.add('active');
+  updateProgress();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function prevSection() {
+  document.querySelector(`[data-section="${current}"]`).classList.remove('active');
+  current--;
+  document.querySelector(`[data-section="${current}"]`).classList.add('active');
+  updateProgress();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function submitForm() {
+  const data = {
+    nombre: document.getElementById('nombre').value,
+    rubro: document.getElementById('rubro').value,
+    ciudad: document.getElementById('ciudad').value,
+    descripcion: document.getElementById('descripcion').value,
+    servicios: document.getElementById('servicios').value,
+    slogan: document.getElementById('slogan').value,
+    colores: document.getElementById('colores').value,
+    referencia: document.getElementById('referencia').value,
+    whatsapp: document.getElementById('whatsapp').value,
+    correo: document.getElementById('correo').value,
+    direccion: document.getElementById('direccion').value,
+    horarios: document.getElementById('horarios').value,
+    instagram: document.getElementById('instagram').value,
+    facebook: document.getElementById('facebook').value,
+    comentarios: document.getElementById('comentarios').value,
+  };
+  const msg = `Hola Javier! Completé el formulario 😊%0A%0A*DATOS DEL NEGOCIO*%0ANombre: ${data.nombre}%0ARubro: ${data.rubro}%0ACiudad: ${data.ciudad}%0A%0A*DESCRIPCIÓN*%0A${data.descripcion}%0A%0A*SERVICIOS*%0A${data.servicios}%0A%0A*SLOGAN*%0A${data.slogan}%0A%0A*IDENTIDAD VISUAL*%0AColores: ${data.colores}%0AReferencia: ${data.referencia}%0A%0A*CONTACTO*%0AWhatsApp: ${data.whatsapp}%0ACorreo: ${data.correo}%0ADirección: ${data.direccion}%0AHorarios: ${data.horarios}%0AInstagram: ${data.instagram}%0AFacebook: ${data.facebook}%0A%0A*COMENTARIOS*%0A${data.comentarios}`;
+  document.getElementById('progressFill').style.width = '100%';
+  document.querySelector(`[data-section="${current}"]`).classList.remove('active');
+  document.getElementById('navBtns').style.display = 'none';
+  document.getElementById('successMsg').classList.add('show');
+  setTimeout(() => {
+    window.open(`https://wa.me/56920141502?text=${msg}`, '_blank');
+  }, 1000);
+}
+
+updateProgress();
+</script>
+</body>
+</html>
